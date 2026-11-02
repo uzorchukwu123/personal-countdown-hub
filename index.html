@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="description" content="Track your most important countdowns — events, deadlines, and moments that matter." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Countdown Hub" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <title>Personal Countdown Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">◈</span>
+        <span class="brand-name">Countdown Hub</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" id="btnImport" title="Import events">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import
+        </button>
+        <button class="btn btn-ghost" id="btnExport" title="Export events">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <button class="btn btn-primary" id="btnNew">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Event
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Featured Countdown -->
+  <section class="featured-section" id="featuredSection">
+    <div class="featured-inner">
+      <p class="featured-label">Featured Countdown</p>
+      <h2 class="featured-title" id="featuredTitle">No event selected</h2>
+      <p class="featured-description" id="featuredDescription"></p>
+      <div class="featured-clock" id="featuredClock">
+        <div class="clock-unit">
+          <span class="clock-number" id="fDays">--</span>
+          <span class="clock-label">days</span>
+        </div>
+        <div class="clock-sep">:</div>
+        <div class="clock-unit">
+          <span class="clock-number" id="fHours">--</span>
+          <span class="clock-label">hours</span>
+        </div>
+        <div class="clock-sep">:</div>
+        <div class="clock-unit">
+          <span class="clock-number" id="fMinutes">--</span>
+          <span class="clock-label">minutes</span>
+        </div>
+        <div class="clock-sep">:</div>
+        <div class="clock-unit">
+          <span class="clock-number" id="fSeconds">--</span>
+          <span class="clock-label">seconds</span>
+        </div>
+      </div>
+      <p class="featured-hint" id="featuredHint">Select an event from your list to feature it here and on your Android widget.</p>
+    </div>
+  </section>
+
+  <!-- Events List -->
+  <main class="main-content">
+    <div class="list-toolbar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="searchInput" class="search-input" placeholder="Search events…" autocomplete="off" />
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="active">Active</button>
+        <button class="filter-tab" data-filter="completed">Completed</button>
+      </div>
+    </div>
+
+    <div class="events-grid" id="eventsGrid">
+      <!-- Cards injected by JS -->
+    </div>
+
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-icon">◈</div>
+      <h3 class="empty-heading">No events yet</h3>
+      <p class="empty-body">Create your first countdown to start tracking what matters.</p>
+      <button class="btn btn-primary" id="btnEmptyNew">Create an event</button>
+    </div>
+
+    <div class="empty-state" id="emptySearch" hidden>
+      <div class="empty-icon">⌕</div>
+      <h3 class="empty-heading">Nothing found</h3>
+      <p class="empty-body">Try a different search term or filter.</p>
+    </div>
+  </main>
+
+  <!-- Event Modal -->
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Event</h2>
+        <button class="modal-close" id="modalClose" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form class="modal-form" id="eventForm" novalidate>
+        <input type="hidden" id="eventId" />
+
+        <div class="form-group">
+          <label class="form-label" for="eventTitle">Event title <span class="req">*</span></label>
+          <input type="text" id="eventTitle" class="form-input" placeholder="e.g. Wedding Day" maxlength="80" required />
+          <span class="form-error" id="errTitle"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="eventDate">Target date <span class="req">*</span></label>
+            <input type="date" id="eventDate" class="form-input" required />
+            <span class="form-error" id="errDate"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="eventTime">Target time</label>
+            <input type="time" id="eventTime" class="form-input" value="00:00" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eventDesc">Description <span class="optional">(optional)</span></label>
+          <textarea id="eventDesc" class="form-input form-textarea" placeholder="Add a note about this event…" maxlength="200" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eventColor">Card accent colour</label>
+          <div class="color-picker-row">
+            <input type="color" id="eventColor" class="color-input" value="#6c63ff" />
+            <div class="color-presets" id="colorPresets">
+              <button type="button" class="color-preset" data-color="#6c63ff" style="background:#6c63ff" title="Indigo"></button>
+              <button type="button" class="color-preset" data-color="#00d4aa" style="background:#00d4aa" title="Teal"></button>
+              <button type="button" class="color-preset" data-color="#ff6b6b" style="background:#ff6b6b" title="Coral"></button>
+              <button type="button" class="color-preset" data-color="#ffd166" style="background:#ffd166" title="Amber"></button>
+              <button type="button" class="color-preset" data-color="#06d6a0" style="background:#06d6a0" title="Mint"></button>
+              <button type="button" class="color-preset" data-color="#ef476f" style="background:#ef476f" title="Rose"></button>
+              <button type="button" class="color-preset" data-color="#118ab2" style="background:#118ab2" title="Ocean"></button>
+              <button type="button" class="color-preset" data-color="#a78bfa" style="background:#a78bfa" title="Lavender"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-check">
+          <input type="checkbox" id="eventFeatured" class="check-input" />
+          <label for="eventFeatured" class="check-label">
+            <span class="check-box"></span>
+            Feature this event <span class="check-sub">(shows in the widget slot and at the top of this page)</span>
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="btnCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btnSave">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteOverlay" hidden>
+    <div class="modal modal-sm" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 class="modal-title">Delete event?</h2>
+      </div>
+      <p class="delete-body" id="deleteBody">This cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btnDeleteCancel">Keep it</button>
+        <button class="btn btn-danger" id="btnDeleteConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div class="modal-overlay" id="importOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 class="modal-title">Import Events</h2>
+        <button class="modal-close" id="importClose">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <p class="import-hint">Paste a JSON export from this app, or from the Android widget app.</p>
+      <textarea id="importJson" class="form-input form-textarea import-textarea" placeholder='[{"id":"…","title":"…","targetISO":"…",…}]' rows="8"></textarea>
+      <span class="form-error" id="errImport"></span>
+      <div class="import-options">
+        <label class="form-check">
+          <input type="checkbox" id="importMerge" class="check-input" checked />
+          <span class="check-box"></span>
+          <span class="check-label">Merge with existing events (uncheck to replace all)</span>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="importCancel">Cancel</button>
+        <button class="btn btn-primary" id="importConfirm">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
